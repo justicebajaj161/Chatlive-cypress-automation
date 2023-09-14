@@ -223,12 +223,13 @@
 
       .chatInfo {
         height: 50px;
-        background-color: #5d5b8d;
+        background-color: #636365;
         display: flex;
+        margin:0 auto;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         padding: 10px;
-        color: lightgray;
+        color: rgb(255, 255, 255);
       }
 
       .chatIcons {
@@ -242,7 +243,8 @@
       }
 
       .messages {
-        background-color: #ddddf7;
+        background: linear-gradient(rgba(189, 187, 187, 0.7), rgba(70, 67, 67, 0.7)),
+        url("https://th.bing.com/th/id/R.3f4e61441932d5f10007531de0ae64a4?rik=vtO%2b9Un1XkY9vw&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fmvibEke.jpg&ehk=e4IhQH4f6w6RdKteD4VB%2fED9l751v%2bDmptRhFsyv3TE%3d&risl=&pid=ImgRaw&r=0") center/cover no-repeat fixed; /* added "fixed" to make the background fixed */
         padding: 10px;
         height: calc(100% - 160px);
         overflow: scroll;

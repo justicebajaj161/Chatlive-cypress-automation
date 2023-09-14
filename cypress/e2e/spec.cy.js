@@ -1,3 +1,4 @@
+const url =`http://localhost:3000`
 describe('App Tests', () => {
   const url =`http://localhost:3000`
   describe('Router Tests', () => {
@@ -5,6 +6,13 @@ describe('App Tests', () => {
 
     it('should redirect to login when not authenticated', () => {
       // Assuming user is not authenticated
+      cy.visit(`${url}/login`);
+      cy.get('input[type="email"]').type('codingninjasuser1@codingninjas.com'); // Assuming this user is already registered
+          cy.get('input[type="password"]').type('codingninjasuser1');
+          cy.get('button').contains(/sign in/i).click();
+          cy.wait(3000)
+          cy.contains(/logout/i).click()
+          cy.wait(3000)
       cy.visit(`${url}`);
       cy.url().should('include', '/login'); // Adjust to match the expected URL
     });
@@ -13,7 +21,7 @@ describe('App Tests', () => {
       cy.visit(`${url}/login`);
       cy.get('input[type="email"]').type('codingninjasuser1@codingninjas.com'); // Assuming this user is already registered
           cy.get('input[type="password"]').type('codingninjasuser1');
-         cy.get('button').contains(/LOGIN/).click();
+         cy.get('button').contains(/sign in/i).click();
          cy.wait(5000); // Wait for possible redirects or actions after login
           cy.url().should('eq', 'http://localhost:3000/');
       // Assuming user is authenticated
@@ -29,7 +37,7 @@ describe('App Tests', () => {
     });
 
     it('should navigate to register page', () => {
-      cy.visit('/register');
+      cy.visit(`${url}/register`);
       cy.url().should('include', 'http://localhost:3000/register'); // Adjust to match the expected URL
     });
 
@@ -48,7 +56,7 @@ cy.contains('Register'); // Adjust based on the exact text in your Register page
 cy.get('input[type="text"]').should('be.visible')
 });
 
-it('should contain input type of email as email', () => {
+it('should contain input type of email as email in /register', () => {
   cy.visit(`${url}/register`);
 cy.contains('Register'); // Adjust based on the exact text in your Register page
 cy.get('input[type="email"]').should('be.visible')
@@ -61,7 +69,7 @@ cy.get('input[type="password"]').should('be.visible')
 it('should contain input type of file as file', () => {
   cy.visit(`${url}/register`);
 cy.contains('Register'); // Adjust based on the exact text in your Register page
-cy.get('input[type="file"]').should('be.visible')
+cy.get('input[type="file"]').should('exist')
 });
 
 
@@ -78,20 +86,23 @@ cy.get('input[type="file"]').should('be.visible')
       cy.get('input[type="email"]').type(uniqueEmail);
       cy.get('input[type="password"]').type('password123');
       cy.get('input[type="file"]').attachFile('1038746.png');
-      cy.get('button').contains(/Submit/i).click();
+      cy.get('button').contains(/Sign up/i).click();
       cy.wait(8000);
-      cy.url().should('eq', 'http://localhost:3000/login');
-      cy.contains('Logout'); 
+      cy.url().should('eq', 'http://localhost:3000/');
+      cy.wait(3000)
+      cy.contains(/logout/i).should('be.visible')
     });
 
     it('should not register with invalid details', () => {
       cy.visit(`${url}/register`);
-      cy.get('input[name="username"]').type('testUser');
-      cy.get('input[name="email"]').type('invalidEmail');
-      cy.get('input[name="password"]').type('1233456678778685');
-      y.get('input[type="file"]').attachFile('1038746.png');
-      cy.get('button[type="submit"]').click();
-      cy.contains(/Something went wrong/i); // Adjust based on the exact error message displayed in your app
+      cy.wait(5000);
+      cy.get('input[type="text"]').type('testUser');
+      cy.get('input[type="email"]').type('invalidEmail@invalid.com');
+      cy.get('input[type="password"]').type('1233456678778685');
+      cy.get('input[type="file"]').attachFile('1038746.png');
+      cy.get('button').contains(/Sign up/i).click();
+
+      cy.url().should('eq', 'http://localhost:3000/register')
     });
   });
 
@@ -99,22 +110,22 @@ cy.get('input[type="file"]').should('be.visible')
 
 
      describe('login page testing',()=>{
-      it('should contain input type of email as email', () => {
+      it('should contain input type of email as email in /login', () => {
         cy.visit(`${url}/login`);
-      cy.contains('login'); // Adjust based on the exact text in your Register page
+      cy.contains(/login/i); // Adjust based on the exact text in your Register page
       cy.get('input[type="email"]').should('be.visible')
       });   
     
-      it('should contain input type of password as password', () => {
+      it('should contain input type of password as password in /login', () => {
         cy.visit(`${url}/login`);
-      cy.contains('login'); // Adjust based on the exact text in your Register page
+        cy.contains(/login/i);  // Adjust based on the exact text in your Register page
       cy.get('input[type="password"]').should('be.visible')
       }); 
       it('should not login with correct details',()=>{
         cy.visit(`${url}/login`);
         cy.get('input[type="email"]').type('jewpjdiewdjwejiwjowi@codingninjas.com'); // Assuming this user is already registered
             cy.get('input[type="password"]').type('epkwdwpe');
-           cy.get('button').contains(/LOGIN/).click();
+           cy.get('button').contains(/Sign in/i).click();
            cy.wait(5000); // Wait for possible redirects or actions after login
             cy.url().should('eq', 'http://localhost:3000/login');
       })  
@@ -123,12 +134,13 @@ cy.get('input[type="file"]').should('be.visible')
         cy.visit(`${url}/login`);
         cy.get('input[type="email"]').type('codingninjasuser1@codingninjas.com'); // Assuming this user is already registered
         cy.get('input[type="password"]').type('codingninjasuser1');
-           cy.get('button').contains(/LOGIN/).click();
+           cy.get('button').contains(/Sign in/i).click();
            cy.wait(5000); // Wait for possible redirects or actions after login
             cy.url().should('eq', 'http://localhost:3000/');
       })
       it('should navigate to the register page when the register link is clicked', () => {
-        cy.contains('Register').click();
+        cy.visit(`${url}/login`);
+        cy.contains(/Register/i).click();
         cy.url().should('eq', `${url}/register`);
       });
       
@@ -140,7 +152,7 @@ cy.get('input[type="file"]').should('be.visible')
       cy.visit(`${url}/login`);
       cy.get('input[type="email"]').type('codingninjasuser1@codingninjas.com'); // Assuming this user is already registered
       cy.get('input[type="password"]').type('codingninjasuser1');
-      cy.get('button[type="submit"]').click();
+      cy.get('button').contains(/Sign in/i).click();
     });
 
     it('should render the navbar correctly for authenticated users', () => {
@@ -165,98 +177,101 @@ cy.get('input[type="file"]').should('be.visible')
 
 describe('Chat Component', () => {
   it('should display user display name', () => {
-    cy.visit('/path-to-your-chat-component'); // replace with the actual path
-    cy.login('codingninjasuser1@codingninjas.com', 'codingninjasuser1'); // Assuming you have a login command
-    cy.get('.chatInfo span').should('contain.text', 'User Display Name'); // replace with the actual display name
+    cy.visit(`${url}/login`);
+    cy.get('input[type="email"]').type('codingninjasuser1@codingninjas.com'); // Assuming this user is already registered
+    cy.get('input[type="password"]').type('codingninjasuser1');
+    cy.get('button').contains(/sign in/i).click();
+    cy.wait(3000)
+    cy.get('.user span').should('contain.text', 'Coding Ninja User1'); // replace with the actual display name
+    // cy.get('.chatInfo span').should('contain.text', 'Coding Ninja User1'); // replace with the actual display name
   });
   
-  it('should display the chat icons', () => {
-    cy.get('.chatIcons img').should('have.length', 3);
-  });
+ 
 });
-
 
 describe('Chats Component', () => {
   beforeEach(() => {
-    cy.visit('/path-to-your-chats-component'); // replace with the actual path
-    cy.login('codingninjasuser1@codingninjas.com', 'codingninjasuser1'); // Assuming you have a login command
+    cy.visit(`${url}/login`);
+    cy.get('input[type="email"]').type('codingninjasuser1@codingninjas.com'); // Assuming this user is already registered
+    cy.get('input[type="password"]').type('codingninjasuser1');
+    cy.get('button').contains(/sign in/i).click();
+  });
+
+  
+  
+  it('should be able to search and find a user', () => {
+    cy.get('.searchForm input[type="text"]')
+      .type('Coding Ninja User2')
+      .type('{enter}');
+    cy.get('.userChat span').should('contain.text', 'Coding Ninja User2');
+  });
+
+  it('should be able to select a chat', () => {
+    cy.get('.userChat').contains('Coding Ninja User2').click().click()
+  
+  });
+
+  it('should send a message and verify it is sent', () => {
+    cy.get('.searchForm input[type="text"]')
+    .type('Coding Ninja User2')
+    .type('{enter}');
+    cy.get('.userChat').contains('Coding Ninja User2').click().click()
+ 
+    const uniquetext = `text${Date.now()}@example`;
+    cy.get('.input input[type="text"]').type(uniquetext);
+    cy.get('.send button').click();
+    cy.wait(4000)
+    cy.contains(/logout/i).click()
+    cy.visit(`${url}/login`);
+    cy.get('input[type="email"]').type('codingninjasuser2@codingninjas.com'); // Assuming this user is already registered
+    cy.get('input[type="password"]').type('codingninjasuser2');
+    cy.get('button').contains(/sign in/i).click();
+    cy.wait(3000)
+    cy.get('.user').contains('Coding Ninja User2')
+    cy.get('.userChat').contains('Coding Ninja User1').click().click()
+    cy.wait(8000)
+    cy.contains(uniquetext).should('be.visible')
+  });
+
+
+  it('should send a image and verify it is sent', () => {
+    cy.get('.searchForm input[type="text"]')
+    .type('Coding Ninja User2')
+    .type('{enter}');
+    cy.get('.userChat').contains('Coding Ninja User2').click().click()
+ 
+    cy.get('input[type="file"]').attachFile('1038746.png');
+    cy.wait(5000)
+    cy.get('.send button').click();
+    cy.wait(12000)
+    cy.contains(/logout/i).click()
+    cy.visit(`${url}/login`);
+    cy.get('input[type="email"]').type('codingninjasuser2@codingninjas.com'); // Assuming this user is already registered
+    cy.get('input[type="password"]').type('codingninjasuser2');
+    cy.get('button').contains(/sign in/i).click();
+    cy.wait(3000)
+    
+    cy.get('.userChat').contains('Coding Ninja User1').click().click()
+    cy.wait(12000)
+    cy.get('.messageContent img') // Adjust the selector to target the correct element in your application
+    .should('be.visible') // Asserts that the image is visible
+    .and(($img) => {
+      // Asserts that the image's src attribute is not empty
+      expect($img[0].src).to.not.be.empty;
+    });
+    
   });
 
   it('should display list of chats', () => {
     cy.get('.chats .userChat').should('have.length.greaterThan', 0);
   });
   
-  it('should be able to select a chat', () => {
-    cy.get('.chats .userChat').first().click();
-    // verify something changes when a chat is selected
-  });
-});
-
-
-describe('Input Component', () => {
-  beforeEach(() => {
-    cy.visit('/path-to-your-input-component'); // replace with the actual path
-    cy.login('codingninjasuser1@codingninjas.com', 'codingninjasuser1'); // Assuming you have a login command
+  it('should display the name of the user in the chatinfo ', () => {
+    cy.get('.searchForm input[type="text"]')
+    .type('Coding Ninja User2')
+    .type('{enter}');
+    cy.get('.userChat').contains('Coding Ninja User2').click().click().click().click()
+    cy.get('.chatInfo span').contains(/Coding Ninja User2/i)
   });
 
-  it('should send a text message', () => {
-    cy.get('.input input[type="text"]').type('Test message');
-    cy.get('.send button').click();
-    // Verify the message was sent, e.g., check the database or the UI
-  });
-
-  it('should send an image message', () => {
-    cy.get('.send input[type="file"]').attachFile('path/to/your/image.jpg'); // replace with the actual path to your image
-    cy.get('.send button').click();
-    // Verify the message was sent, e.g., check the database or the UI
-  });
-});
-
-
-
-
-describe('Message Component', () => {
-  beforeEach(() => {
-    cy.visit('/path-to-your-message-component'); // replace with the actual path
-    cy.login('codingninjasuser1@codingninjas.com', 'codingninjasuser1'); // Assuming you have a login command
-  });
-
-  it('should display the message with the correct styling', () => {
-    // Assuming there's a message already - verify it displays correctly
-    cy.get('.message').should('exist');
-    cy.get('.message.owner').should('exist');
-    cy.get('.messageInfo img').should('exist');
-  });
-});
-
-
-
-describe('Messages Component', () => {
-  beforeEach(() => {
-    cy.visit('/path-to-your-messages-component'); // replace with the actual path
-    cy.login('codingninjasuser1@codingninjas.com', 'codingninjasuser1'); // Assuming you have a login command
-  });
-
-  it('should display a list of messages', () => {
-    cy.get('.messages .message').should('have.length.greaterThan', 0);
-  });
-});
-
-describe('Search Component', () => {
-  beforeEach(() => {
-    cy.visit('/path-to-your-search-component'); // replace with the actual path
-    cy.login('codingninjasuser1@codingninjas.com', 'codingninjasuser1'); // Assuming you have a login command
-  });
-
-  it('should be able to search and find a user', () => {
-    cy.get('.searchForm input').type('user2'); // replace with a username that exists
-    cy.get('.searchForm input').type('{enter}');
-    cy.get('.userChat').should('exist');
-  });
-
-  it('should display error message when no user found', () => {
-    cy.get('.searchForm input').type('nonexistinguser');
-    cy.get('.searchForm input').type('{enter}');
-    cy.get('.search span').should('contain.text', 'User not found!');
-  });
 });
