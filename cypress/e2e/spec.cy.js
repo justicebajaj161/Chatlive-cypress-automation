@@ -270,7 +270,7 @@ describe('Chats Component', () => {
     cy.get('.searchForm input[type="text"]')
     .type('Coding Ninja User2')
     .type('{enter}');
-    cy.get('.userChat').contains('Coding Ninja User2').click().click().click().click()
+    cy.get('.userChat').contains('Coding Ninja User2').click().click()
     cy.get('.chatInfo span').contains(/Coding Ninja User2/i)
   });
 
